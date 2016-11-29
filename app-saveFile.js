@@ -2,7 +2,7 @@
 /************************************/
 var http = require('http');
 var fs=require("fs")
-var proxy=require("proxy")
+var proxy=require("./proxy")
 var url2path=require("url2path")
 var path=require("path")
 var zlib = require('zlib');

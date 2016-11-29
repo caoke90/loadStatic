@@ -2,7 +2,7 @@
 /************************************/
 var http = require('http');
 var fs=require("fs")
-var proxy=require("proxy")
+var proxy=require("./proxy")
 
 var server = proxy();
 //请求开始的参数 parsed

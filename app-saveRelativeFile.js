@@ -20,7 +20,7 @@ function mkdir(filepath){
 function url2realpath(href){
     var href=href.replace(/\?.+/,"")
     href=href.replace(/(https?:\/\/[\w\.]+\/[^/\.]+$)/i,"$1/")
-    console.log(href)
+
     var rpath=url2path.url2pathRelative(href);
     rpath=rpath.replace(/(\\.+?\\.+?\\.+?\\.+?\\.+?\\).+\\(.+)$/g,"$1$2")
     rpath=rpath.replace(/\\$/,"/index.html")
@@ -74,7 +74,6 @@ function UrltoRelaive(url,html){
         doman2=p2
     })
     var urlFile=path.dirname(url2realpath(url))
-
     html=html.replace(/(["']|\()(.+?)(\1|\))/g,function(m,p1,url){
         if(/[<>\{\}="']/.test(url)){return m;}
         var url2=url

@@ -6,24 +6,7 @@ var proxy=require("./proxy")
 var url2path=require("url2path")
 var path=require("path")
 var zlib = require('zlib');
-function UrltoRelaive(url,html){
-    var url2=url.replace(/(https?:\/\/[\w\.]+\/[^/\.]+$)/i,"$1/")
-    var doman,dir;
-    url2.replace(/(^https?:\/\/[a-z\.]+)(.*\/)/i,function(m,p1,p2){
-        doman=p1
-        dir=p2
-    })
-    html=html.replace(/(["']|\()(.+?)(\1|\))/g,function(m,p1,url){
-        if(url.indexOf(doman)==0){
-            m=m.replace(doman,"")
-        }
-        if(/^\//.test(url)){
-            m= m.replace(url,path.relative(dir, url).replace(/\\/g,"/"))
-        }
-        return m
-    })
-    return html
-}
+
 //创建文件夹
 function mkdir(filepath){
     if(!fs.existsSync(path.dirname(filepath))){
@@ -81,6 +64,29 @@ function saveStream(filepath,parsed,statusCode,headers,proxyRes){
 
         fs.writeFileSync(filepath,buff)
     })
+}
+function UrltoRelaive(url,html){
+
+    var doman;
+    url.replace(/(^https?:\/\/[a-z\.]+)(.*\/)/i,function(m,p1,p2){
+        doman=p1
+    })
+    var urlFile=path.dirname(url2realpath(url))
+    html=html.replace(/(["']|\()(.+?)(\1|\))/g,function(m,p1,url){
+        var url2=url
+        if(/^\//.test(url)){
+            url2=doman+url
+            m= m.replace(url,url2)
+        }
+        if(url2.indexOf(doman)==0){
+            var theFile=url2realpath(url2)
+            var nUrl=path.relative(urlFile,theFile)
+            nUrl=nUrl.replace(/\\/g,"/")
+            m=m.replace(url2,nUrl)
+        }
+        return m
+    })
+    return html
 }
 server.listen(100, function () {
     var port = server.address().port;

@@ -6,6 +6,24 @@ var proxy=require("./proxy")
 var url2path=require("url2path")
 var path=require("path")
 var zlib = require('zlib');
+function UrltoRelaive(url,html){
+    var url2=url.replace(/(https?:\/\/[\w\.]+\/[^/\.]+$)/i,"$1/")
+    var doman,dir;
+    url2.replace(/(^https?:\/\/[a-z\.]+)(.*\/)/i,function(m,p1,p2){
+        doman=p1
+        dir=p2
+    })
+    html=html.replace(/(["']|\()(.+?)(\1|\))/g,function(m,p1,url){
+        if(url.indexOf(doman)==0){
+            m=m.replace(doman,"")
+        }
+        if(/^\//.test(url)){
+            m= m.replace(url,path.relative(dir, url).replace(/\\/g,"/"))
+        }
+        return m
+    })
+    return html
+}
 //创建文件夹
 function mkdir(filepath){
     if(!fs.existsSync(path.dirname(filepath))){
@@ -55,6 +73,12 @@ function saveStream(filepath,parsed,statusCode,headers,proxyRes){
         if(headers["Content-Encoding"]=="gzip"){
             buff=zlib.gunzipSync(buff)
         }
+
+        if(headers["Content-Type"].indexOf("text")>-1){
+            buff=buff.toString()
+            buff=UrltoRelaive(parsed.href,buff)
+        }
+
         fs.writeFileSync(filepath,buff)
     })
 }

@@ -20,6 +20,7 @@ function mkdir(filepath){
 function url2realpath(href){
     var href=href.replace(/\?.+/,"")
     href=href.replace(/(https?:\/\/[\w\.]+\/[^/\.]+$)/i,"$1/")
+    console.log(href)
     var rpath=url2path.url2pathRelative(href);
     rpath=rpath.replace(/(\\.+?\\.+?\\.+?\\.+?\\.+?\\).+\\(.+)$/g,"$1$2")
     rpath=rpath.replace(/\\$/,"/index.html")
@@ -57,7 +58,7 @@ function saveStream(filepath,parsed,statusCode,headers,proxyRes){
             buff=zlib.gunzipSync(buff)
         }
 
-        if(headers["Content-Type"].indexOf("text")>-1){
+        if(headers["Content-Type"]&&headers["Content-Type"].indexOf("text")>-1){
             buff=buff.toString()
             buff=UrltoRelaive(parsed.href,buff)
         }
@@ -67,18 +68,21 @@ function saveStream(filepath,parsed,statusCode,headers,proxyRes){
 }
 function UrltoRelaive(url,html){
 
-    var doman;
-    url.replace(/(^https?:\/\/[a-z\.]+)(.*\/)/i,function(m,p1,p2){
+    var doman,doman2;
+    url.replace(/(^https?:\/\/[a-z0-9]+?\.([a-z0-9\.]+))(.*\/)/i,function(m,p1,p2){
         doman=p1
+        doman2=p2
     })
     var urlFile=path.dirname(url2realpath(url))
+
     html=html.replace(/(["']|\()(.+?)(\1|\))/g,function(m,p1,url){
+        if(/[<>\{\}="']/.test(url)){return m;}
         var url2=url
         if(/^\//.test(url)){
             url2=doman+url
             m= m.replace(url,url2)
         }
-        if(url2.indexOf(doman)==0){
+        if(url2.indexOf(doman2)>0){
             var theFile=url2realpath(url2)
             var nUrl=path.relative(urlFile,theFile)
             nUrl=nUrl.replace(/\\/g,"/")

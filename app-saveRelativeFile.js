@@ -84,6 +84,13 @@ function UrltoRelaive(url,html){
             }
             m= m.replace(url,url2)
         }
+        if(/^\.\//.test(url)){
+            url2=doman+dir+url
+            if(dir=="/"){
+                url2=url2.replace("/.","")
+            }
+            m= m.replace(url,url2)
+        }
         if(/^\//.test(url)){
             url2=doman+url
             m= m.replace(url,url2)

@@ -75,7 +75,8 @@ function UrltoRelaive(url,html){
     })
     var urlFile=path.dirname(url2realpath(url))
     html=html.replace(/(["']|\()(.+?)(\1|\))/g,function(m,p1,url){
-        if(/[<>\{\}="']/.test(url)){return m;}
+        if(url.length<5){return m;}
+        if(/[\[\]<>\{\}="'\+ ]/.test(url)){return m;}
         var url2=url
         if(/^\.\.\//.test(url)){
             url2=doman+dir+url
@@ -95,7 +96,7 @@ function UrltoRelaive(url,html){
             url2=doman+url
             m= m.replace(url,url2)
         }
-        if(url2.indexOf(doman2)>0){
+        if(url2&&url2.indexOf(doman2)>0){
             var theFile=url2realpath(url2)
             var nUrl=path.relative(urlFile,theFile)
             nUrl=nUrl.replace(/\\/g,"/")

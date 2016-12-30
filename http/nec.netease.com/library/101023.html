@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8"/>
+
+<title>两列右侧自适应布局[兼容版] - 代码库 - NEC : 更好的CSS样式解决方案</title>
+<meta name="keywords" content="CSS方案,CSS规范,CSS框架,CSS代码库,CSS插件,网页制作,前端页面开发,解决方案"/>
+<meta name="description" content="NEC包括了规范、框架、代码库、插件等内容，致力于为前端开发人员提供高效率高质量的前端页面开发解决方案，提高多人协作效率，也为非专业人员提供快速制作网页的解决方案。"/>
+<meta name="viewport" content="width=device-width"/>
+<link rel="stylesheet" href="../pub/core.css"/>
+<link rel="icon" type="image/x-icon" href="../img/favicon.ico"/>
+<link rel="apple-touch-icon" href="../img/touchicon.png"/>
+
+<style type="text/css">
+html,body{width:100%;height:100%;overflow:hidden;}
+html{_height:auto;_padding-top:168px;}
+.g-hd{_margin-top:-168px;}
+.m-mask{position:absolute;top:0;left:0;width:100%;height:100%;}
+</style>
+<script type="text/javascript">
+
+var library = {"id":1,"catID":3,"title":"两列右侧自适应布局","introduction":"左栏定宽，右栏自适应剩余宽度","name":"101023","version":"1"};
+var libraryList = [{"id":1,"title":"两列右侧自适应布局","name":"101023","version":"1"},{"id":11,"title":"两列左侧自适应布局","name":"101022","version":"1"},{"id":2,"title":"两列定宽布局","name":"101021","version":"1"}];
+var version = "1";
+
+var parseLibrary = function (_library){
+var _name = _library&&_library.name,
+_versionList = _library.version,
+_dfsRoot = '../dfs',
+_temp = _dfsRoot + '/' + _name + '/';
+if(_name != undefined){
+_library.htmlsrc = _temp + version + '/index.html';
+_library.csssrc = _temp + version + '/style.css';
+}
+return _library;
+};
+</script>
+</head>
+<body class="p-library">
+<div class="g-hd f-usn">
+<div class="g-in">
+<div class="m-head">
+<h1><a href="/">NEC 更好的CSS方案</a></h1>
+</div>
+</div>
+</div>
+<div class="g-nv f-usn">
+<div class="g-in">
+<ul class="m-nav">
+<li class="first"><a href="/">首页</a><i></i></li>
+<li><a href="../standard/index.html">规范</a><i></i></li>
+<li><a href="../framework/index.html">框架</a><i></i></li>
+<li class="crt"><a href="index.html">代码库</a><i></i></li>
+<li><a href="../plugin/index.html">插件</a><i></i></li>
+<li><a href="../case/index.html">案例</a><i></i></li>
+</ul>
+</div>
+</div>
+
+
+<div class="g-tool" id="workspace">
+<div class="m-tool">
+<div class="awrap" id="preview"><iframe id="previewIframe" src="" frameborder="0"></iframe></div>
+<div class="bwrap f-usn" id="toolbar">
+<div class="toggle f-usn" id="togglev"><div class="togglein"><div class="togglein2"></div></div><i></i></div>
+<div class="bwrapin f-cb" id="bwrapin">
+<div class="info">
+<h2 id="js-tlt">
+<b id="more">两列右侧自适应布局 [ 兼容 ]</b>
+
+<span class="u-verbox u-verbox-crt">
+
+
+<i class="u-ver u-ver-1" title="兼容版">兼容版</i>
+
+
+</span>
+<span class="u-verbox ">
+
+<span class="u-ver u-ver-2" title="暂无优雅版"></span>
+
+</span>
+<span class="u-verbox ">
+
+<span class="u-ver u-ver-3" title="暂无高级版"></span>
+
+</span>
+</h2>
+<p id="introduction">左栏定宽，右栏自适应剩余宽度</p>
+<div id="list" class="list" style="display:none;"></div>
+</div>
+<div class="btns">
+<a href="javascript:void(0)" id="run" class="run">运 行</a><a href="javascript:void(0)" id="reset" class="reset">重 置</a>
+</div>
+</div>
+</div>
+<div class="cwrap" id="code">
+<div class="code code-l" id="htmlCode">
+<textarea id="htmlSrc" spellcheck="false">html loading</textarea>
+</div>
+<div class="code code-r" id="cssCode">
+<textarea id="cssSrc" spellcheck="false">css loading</textarea>
+</div>
+<div class="code code-toggle f-usn" id="toggleh"><div class="vline"></div></div>
+</div>
+</div>
+</div>
+
+
+<script type="text/javascript">
+(function(d) {
+var _pageType = 'library';
+var _title = encodeURIComponent(d.title);
+var _url = encodeURIComponent(d.location);
+var _temp = d.createDocumentFragment();
+var _share = d.createElement('div');
+_share.innerHTML = '<ul class="f-cb" id="share"><li><a href="'+'http://t.163.com/article/user/checkLogin.do?link='+_url+'&info='+_title+_url+'" target="_blank" title="分享到网易微博" class="s1">网易微博</a></li><li><a href="'+'http://v.t.sina.com.cn/share/share.php?title='+_title+_url+'" target="_blank" title="分享到新浪微博" class="s2">新浪微博</a></li><li><a href="'+'http://v.t.qq.com/share/share.php?title='+_title+'&url='+_url+'" target="_blank" title="分享到腾讯微博" class="s3">腾讯微博</a></li><li><a href="'+'http://widget.renren.com/dialog/share?resourceUrl='+_url+'&title='+_title+'" target="_blank" title="分享到人人网" class="s4">人人网</a></li><li><a href="'+'http://www.douban.com/recommend/?title='+_title+'&url='+_url+'" target="_blank" title="分享到豆瓣" class="s5">豆瓣</a></li></ul>';
+_temp.appendChild(_share);
+if(_pageType == 'library'){
+_share.className = "m-share m-share-2 f-usn";
+d.getElementById('bwrapin').appendChild(_temp);
+}else if(_pageType == 'animator'){
+_share.className = "m-share m-share-2 m-share-2-1 f-usn";
+d.getElementById('anglobal').appendChild(_temp);
+d.getElementById('share').style.display = 'none';
+}else{
+_share.className = "m-share f-usn";
+d.body.appendChild(_temp);
+}
+})(document);
+</script>
+
+
+<script type="text/javascript">
+(function() {
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+var _oScript = document.createElement("script");
+_oScript.type = "text/javascript";
+_oScript.src = _bdhmProtocol + 'hm.baidu.com/h.js?b674c1af47b842e5c20286c4c189366f';
+document.body.appendChild(_oScript);
+})();
+</script>
+<script src="../pub/core.js"></script>
+<script src="../pub/pt_5f_library.js"></script>
+
+</body>
+</html>

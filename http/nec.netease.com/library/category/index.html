@@ -31,14 +31,14 @@
 <div class="g-hd f-usn">
 <div class="g-in">
 <div class="m-head">
-<h1><a href="../../index.html">NEC 更好的CSS方案</a></h1>
+<h1><a href="/">NEC 更好的CSS方案</a></h1>
 </div>
 </div>
 </div>
 <div class="g-nv f-usn">
 <div class="g-in">
 <ul class="m-nav">
-<li class="first"><a href="../../index.html">首页</a><i></i></li>
+<li class="first"><a href="/">首页</a><i></i></li>
 <li><a href="../../standard/index.html">规范</a><i></i></li>
 <li><a href="../../framework/index.html">框架</a><i></i></li>
 <li class="crt"><a href="../index.html">代码库</a><i></i></li>
@@ -197,7 +197,7 @@ var parseLibrary = function (_library){
 var _name = _library&&_library.name,
 _versionList = _library.version,
 _dfsRoot = '../../dfs/index.html',
-_temp = _dfsRoot + '../../index.html' + _name + '../../index.html';
+_temp = _dfsRoot + '/' + _name + '/';
 if(_name != undefined){
 _library.imgsrc = _temp + 'thumb.png';
 }
@@ -211,7 +211,7 @@ return _library;
 (function(){
 var _eas = document.getElementById('menulist').getElementsByTagName('a');
 for(var i=0,_len=_eas.length,_ea,_arr;_ea=_eas[i];i++){
-_arr = _ea.href.match(../../index.html(\/library\/category\/)(\w+)/);
+_arr = _ea.href.match(/(\/library\/category\/)(\w+)/);
 if(_arr){
 _ea.onclick = (function(path, category, node){
 return function(){

@@ -27,11 +27,11 @@ var version = "1";
 var parseLibrary = function (_library){
 var _name = _library&&_library.name,
 _versionList = _library.version,
-_dfsRoot = '../dfs',
+_dfsRoot = '../dfs/index.html',
 _temp = _dfsRoot + '/' + _name + '/';
 if(_name != undefined){
-_library.htmlsrc = _temp + version + '/index.html';
-_library.csssrc = _temp + version + '/style.css';
+_library.htmlsrc = _temp + version + '../index.html';
+_library.csssrc = _temp + version + '../style.css';
 }
 return _library;
 };
@@ -137,7 +137,7 @@ d.body.appendChild(_temp);
 var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
 var _oScript = document.createElement("script");
 _oScript.type = "text/javascript";
-_oScript.src = _bdhmProtocol + 'hm.baidu.com/h.js?b674c1af47b842e5c20286c4c189366f';
+_oScript.src = _bdhmProtocol + 'hm.baidu.com/h.js';
 document.body.appendChild(_oScript);
 })();
 </script>

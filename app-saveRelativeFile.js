@@ -6,7 +6,7 @@ var proxy=require("./proxy")
 var url2path=require("url2path")
 var path=require("path")
 var zlib = require('zlib');
-
+var Iconv = require('iconv-lite');
 //创建文件夹
 function mkdir(filepath){
     if(!fs.existsSync(path.dirname(filepath))){
@@ -16,17 +16,87 @@ function mkdir(filepath){
         fs.mkdirSync(filepath)
     }
 }
-//url转成文件路径
 function url2realpath(href){
     var href=href.replace(/\?.+/,"")
     href=href.replace(/(https?:\/\/[\w\.]+\/[^/\.]+$)/i,"$1/")
+    href=href.replace(/(\/[a-z0-9]+$)/i,"$1.html")
     var rpath=url2path.url2pathRelative(href);
     rpath=rpath.replace(/(\\.+?\\.+?\\.+?\\.+?\\.+?\\).+\\(.+)$/g,"$1$2")
     rpath=rpath.replace(/\\$/,"/index.html")
+
     return rpath
 }
+function getAllUrl(theUrl,html){
+    var thefilePath=path.dirname(url2realpath(theUrl)).replace(/\\/g,"/")
+    var doman,doman2,dir;
+    theUrl.replace(/(^https?:\/\/[a-z0-9\.]+?\.([a-z0-9\.]+))(.*\/)/i,function(m,p1,p2,p3){
+        doman=p1
+        doman2=p2
+        dir=p3
+    })
+    doman2=doman2.replace(/\.[a-z]+$/,"").replace(/[a-z]+\./,"")
+    function solve(item){
+        var url=item.oriUrl
+        if(/^\/\//.test(url)){
+            url="http:"+url
+        }else if(/^\//.test(url)){
+            url=doman+url
+        }else if(!/^http/.test(url)){
+            url=doman+dir+url
+        }
+        url=url.replace(/\/.\//g,"")
+        url=url.replace(doman+"/../",doman+"/")
+        item.absUrl=url
 
+        var url=item.absUrl
+        item.filePath=url2realpath(url).replace(/\\/g,"/")
+        if(url.indexOf(doman2)>-1||/\.(css|js)$/.test(item.filePath)){
+            item.relUrl=path.relative(item.thefilePath,item.filePath).replace(/\\/g,"/")
+        }
+        return item;
+    }
+    var dataUrl=[];//原始的url
+    html=html.replace(/<meta .*?charset=(["']?)gb(2312|k|18030)\1?/gi,function(m){
+        return m.replace(/gb(2312|k|18030)/i,"utf-8")
+    })
+    html=html.replace(/.+/g,function(line){
+        line=line.replace(/([a-z]*)[ =]*["'=\(]([\w:\/\.]*\/[\w:\/\.\?#&=_-]+?)["'\) ]/gi,function(m,p1,url){
+            if(p1!="type"){
+                url=url.replace(/#.+/,"")
+                if(url){
+                    var item=solve({
+                        thefilePath:thefilePath,
+                        oriUrl:url
+                    })
+                    dataUrl.push(item)
+                    if(item.relUrl){
+                        m= m.replace(item.oriUrl,item.relUrl)
+                    }
+                }
+            }
+            return m;
+        })
+        line=line.replace(/([a-z]*)[ =]*["'=\(]([\w:\.\?#&=_-]+?)["'\) ]/gi,function(m,p1,url){
+            if(p1=="href"||p1=="url"||p1=="src"){
+                url=url.replace(/#.*/,"")
+                if(url){
+                    var item=solve({
+                        thefilePath:thefilePath,
+                        oriUrl:url
+                    })
+                    dataUrl.push(item)
+                    if(item.relUrl){
+                        m= m.replace(item.oriUrl,item.relUrl)
+                    }
+                }
+            }
+            return m;
+        })
+        return line;
 
+    })
+    return [html,dataUrl];
+}
 var server = proxy();
 //请求开始的参数 parsed
 //请求结束的参数 statusCode (状态)
@@ -58,8 +128,12 @@ function saveStream(filepath,parsed,statusCode,headers,proxyRes){
         }
 
         if(headers["Content-Type"]&&headers["Content-Type"].indexOf("text")>-1){
-            buff=buff.toString()
-            buff=UrltoRelaive(parsed.href,buff)
+            var body=buff.toString()
+            if (/gb(2312|k)/i.test(headers['content-type'])||/<meta .*?charset=(["']?)gb(2312|k|18030)\1?/gi.test(body)||/encoding="gbk"/gi.test(body)) {
+                body = Iconv.decode(buff, 'gb2312').toString()
+            }
+
+            buff=UrltoRelaive(parsed.href,body)
         }
 
         fs.writeFileSync(filepath,buff)
@@ -67,44 +141,8 @@ function saveStream(filepath,parsed,statusCode,headers,proxyRes){
 }
 function UrltoRelaive(url,html){
 
-    var doman,doman2,dir;
-    url.replace(/(^https?:\/\/[a-z0-9]+?\.([a-z0-9\.]+))(.*\/)/i,function(m,p1,p2,p3){
-        doman=p1
-        doman2=p2
-        dir=p3
-    })
-    var urlFile=path.dirname(url2realpath(url))
-    html=html.replace(/(["']|\()(.+?)(\1|\))/g,function(m,p1,url){
-        if(url.length<5){return m;}
-        if(/[\[\]<>\{\}="'\+ ]/.test(url)){return m;}
-        var url2=url
-        if(/^\.\.\//.test(url)){
-            url2=doman+dir+url
-            if(dir=="/"){
-                url2=url2.replace("/..","")
-            }
-            m= m.replace(url,url2)
-        }
-        if(/^\.\//.test(url)){
-            url2=doman+dir+url
-            if(dir=="/"){
-                url2=url2.replace("/.","")
-            }
-            m= m.replace(url,url2)
-        }
-        if(/^\//.test(url)){
-            url2=doman+url
-            m= m.replace(url,url2)
-        }
-        if(url2&&url2.indexOf(doman2)>0){
-            var theFile=url2realpath(url2)
-            var nUrl=path.relative(urlFile,theFile)
-            nUrl=nUrl.replace(/\\/g,"/")
-            m=m.replace(url2,nUrl)
-        }
-        return m
-    })
-    return html
+    var dataUrl=getAllUrl(url,html)
+    return dataUrl[0];
 }
 server.listen(100, function () {
     var port = server.address().port;

@@ -23,7 +23,11 @@ function url2realpath(href){
     var rpath=url2path.url2pathRelative(href);
     rpath=rpath.replace(/(\\.+?\\.+?\\.+?\\.+?\\.+?\\).+\\(.+)$/g,"$1$2")
     rpath=rpath.replace(/\\$/,"/index.html")
-
+    rpath=rpath.replace(/\\/g,"/")
+    rpath=rpath.replace(/http\/(.+?)\//,function(m,p1){
+        var np1=p1.replace(/[a-z0-9\.]+\.([a-z0-9]+)\.[a-z]+/,"$1")
+        return m.replace(p1,np1+"/"+p1)
+    })
     return rpath
 }
 function getAllUrl(theUrl,html){
@@ -32,9 +36,10 @@ function getAllUrl(theUrl,html){
     theUrl.replace(/(^https?:\/\/[a-z0-9\.]+?\.([a-z0-9\.]+))(.*\/)/i,function(m,p1,p2,p3){
         doman=p1
         doman2=p2
+        doman2=doman2.replace(/\.[a-z]+$/,"").replace(/[a-z]+\./,"")
         dir=p3
     })
-    doman2=doman2.replace(/\.[a-z]+$/,"").replace(/[a-z]+\./,"")
+
     function solve(item){
         var url=item.oriUrl
         if(/^\/\//.test(url)){
@@ -50,15 +55,13 @@ function getAllUrl(theUrl,html){
 
         var url=item.absUrl
         item.filePath=url2realpath(url).replace(/\\/g,"/")
-        if(url.indexOf(doman2)>-1||/\.(css|js)$/.test(item.filePath)){
+        if(url.indexOf(doman2)>-1){
             item.relUrl=path.relative(item.thefilePath,item.filePath).replace(/\\/g,"/")
         }
         return item;
     }
     var dataUrl=[];//原始的url
-    html=html.replace(/<meta .*?charset=(["']?)gb(2312|k|18030)\1?/gi,function(m){
-        return m.replace(/gb(2312|k|18030)/i,"utf-8")
-    })
+
     html=html.replace(/.+/g,function(line){
         line=line.replace(/([a-z]*)[ =]*["'=\(]([\w:\/\.]*\/[\w:\/\.\?#&=_-]+?)["'\) ]/gi,function(m,p1,url){
             if(p1!="type"){
@@ -131,6 +134,9 @@ function saveStream(filepath,parsed,statusCode,headers,proxyRes){
             var body=buff.toString()
             if (/gb(2312|k)/i.test(headers['content-type'])||/<meta .*?charset=(["']?)gb(2312|k|18030)\1?/gi.test(body)||/encoding="gbk"/gi.test(body)) {
                 body = Iconv.decode(buff, 'gb2312').toString()
+                body=body.replace(/<meta .*?charset=(["']?)gb(2312|k|18030)\1?/gi,function(m){
+                    return m.replace(/gb(2312|k|18030)/i,"utf-8")
+                })
             }
 
             buff=UrltoRelaive(parsed.href,body)

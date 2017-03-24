@@ -20,6 +20,7 @@ function url2realpath(href){
     var href=href.replace(/\?.+/,"")
     href=href.replace(/(https?:\/\/[\w\.]+\/[^/\.]+$)/i,"$1/")
     var rpath=url2path.url2pathRelative(href);
+    rpath=rpath.replace(/_5f/g,"")
     rpath=rpath.replace(/(\\.+?\\.+?\\.+?\\.+?\\.+?\\).+\\(.+)$/g,"$1$2")
     rpath=rpath.replace(/\\$/,"/index.html")
     return rpath

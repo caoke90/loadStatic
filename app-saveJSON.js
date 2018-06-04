@@ -8,6 +8,7 @@ var path=require("path")
 var zlib = require('zlib');
 //创建文件夹
 function mkdir(filepath){
+
     if(!fs.existsSync(path.dirname(filepath))){
         mkdir(path.dirname(filepath))
     }
@@ -35,10 +36,11 @@ server.httpParams=function(parsed,statusCode,headers,proxyRes){
     if(statusCode==200){
         var rpath=url2realpath(parsed.href)
 
-//        console.log(parsed)
+       // console.log(rpath)
 //        console.log(statusCode)
-//        console.log(headers)
-        if(headers["Content-Type"]=="application/json;charset=UTF-8"){
+//        console.log(headers["Content-Type"])
+        if(headers["Content-Type"].indexOf("application/json;")>-1){
+            console.log(rpath)
             mkdir(path.dirname(rpath))
             saveStream(rpath,parsed,statusCode,headers,proxyRes)
         }
